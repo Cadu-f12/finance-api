@@ -4,13 +4,25 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "monthly_closing")
+@Table(
+    name = "monthly_closing",
+    uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_monthly_closing_month_year",
+                columnNames = {"month", "year"}
+        )
+    }
+)
 public class MonthlyClosingEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<MonthlyExpenseEntity> monthly_expenses;
 
     @Column(name = "month", nullable = false, unique = true, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")
     private Integer month;
