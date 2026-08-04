@@ -44,4 +44,76 @@ public class MonthlyClosingEntity {
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<MonthlyExpenseEntity> getMonthlyExpense() {
+        return monthlyExpense;
+    }
+
+    public void setMonthlyExpense(List<MonthlyExpenseEntity> monthlyExpense) {
+        this.monthlyExpense = monthlyExpense;
+    }
+
+    public List<InvestmentAllocationEntity> getInvestmentAllocation() {
+        return investmentAllocation;
+    }
+
+    public void setInvestmentAllocation(List<InvestmentAllocationEntity> investmentAllocation) {
+        this.investmentAllocation = investmentAllocation;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public BigDecimal getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public void setCurrentBalance(BigDecimal currentBalance) {
+        this.currentBalance = currentBalance;
+    }
+
+    public BigDecimal getLeisurePercentage() {
+        return leisurePercentage;
+    }
+
+    public void setLeisurePercentage(BigDecimal leisurePercentage) {
+        this.leisurePercentage = leisurePercentage;
+    }
+
+    public BigDecimal getInvestmentPercentage() {
+        return investmentPercentage;
+    }
+
+    public void setInvestmentPercentage(BigDecimal investmentPercentage) {
+        this.investmentPercentage = investmentPercentage;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
