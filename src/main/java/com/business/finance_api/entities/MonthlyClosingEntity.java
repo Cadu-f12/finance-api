@@ -22,7 +22,10 @@ public class MonthlyClosingEntity {
     private Long id;
 
     @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<MonthlyExpenseEntity> monthly_expenses;
+    private List<MonthlyExpenseEntity> monthlyExpense;
+
+    @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<InvestmentAllocationEntity> investmentAllocation;
 
     @Column(name = "month", nullable = false, unique = true, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")
     private Integer month;

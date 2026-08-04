@@ -5,11 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "monthly_expense")
-public class MonthlyExpenseEntity {
-
+@Table(name = "investment_allocation")
+public class InvestmentAllocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,17 +16,11 @@ public class MonthlyExpenseEntity {
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthly_closing;
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
+    @Column(name = "modality", length = 100, nullable = false)
+    private String modality;
 
-    @Column(name = "description",columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
-
-    @Column(name = "expense_type", nullable = false, length = 50)
-    private ExpenseType expenseType;
+    @Column(name = "percentage", nullable = false, precision = 5, scale = 4)
+    private BigDecimal percentage;
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,36 +41,20 @@ public class MonthlyExpenseEntity {
         this.monthly_closing = monthly_closing;
     }
 
-    public String getName() {
-        return name;
+    public String getModality() {
+        return modality;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setModality(String modality) {
+        this.modality = modality;
     }
 
-    public String getDescription() {
-        return description;
+    public BigDecimal getPercentage() {
+        return percentage;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public ExpenseType getExpenseType() {
-        return expenseType;
-    }
-
-    public void setExpenseType(ExpenseType expenseType) {
-        this.expenseType = expenseType;
+    public void setPercentage(BigDecimal percentage) {
+        this.percentage = percentage;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -89,4 +65,3 @@ public class MonthlyExpenseEntity {
         this.createdAt = createdAt;
     }
 }
-
