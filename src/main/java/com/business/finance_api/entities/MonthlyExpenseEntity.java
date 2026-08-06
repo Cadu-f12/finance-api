@@ -27,6 +27,7 @@ public class MonthlyExpenseEntity {
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "expense_type", nullable = false, length = 50)
     private ExpenseType expenseType;
 
