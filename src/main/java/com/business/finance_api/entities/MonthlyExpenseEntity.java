@@ -34,6 +34,24 @@ public class MonthlyExpenseEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    protected MonthlyExpenseEntity() {}
+
+    public MonthlyExpenseEntity(
+            MonthlyClosingEntity monthly_closing,
+            String name,
+            String description,
+            BigDecimal amount,
+            ExpenseType expenseType,
+            LocalDateTime createdAt
+    ) {
+        this.monthly_closing = monthly_closing;
+        this.name = name;
+        this.description = description;
+        this.amount = amount;
+        this.expenseType = expenseType;
+        this.createdAt = createdAt;
+    }
+
     public Long getId() {
         return id;
     }

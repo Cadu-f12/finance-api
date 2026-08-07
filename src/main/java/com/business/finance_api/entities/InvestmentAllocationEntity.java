@@ -25,6 +25,20 @@ public class InvestmentAllocationEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    protected InvestmentAllocationEntity() {}
+
+    public InvestmentAllocationEntity(
+            LocalDateTime createdAt,
+            BigDecimal percentage,
+            String modality,
+            MonthlyClosingEntity monthly_closing
+    ) {
+        this.createdAt = createdAt;
+        this.percentage = percentage;
+        this.modality = modality;
+        this.monthly_closing = monthly_closing;
+    }
+
     public Long getId() {
         return id;
     }

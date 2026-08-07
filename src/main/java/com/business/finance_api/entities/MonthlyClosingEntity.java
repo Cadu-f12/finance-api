@@ -45,6 +45,23 @@ public class MonthlyClosingEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    protected MonthlyClosingEntity() {}
+
+    public MonthlyClosingEntity(
+            BigDecimal investmentPercentage,
+            BigDecimal leisurePercentage,
+            BigDecimal currentBalance,
+            Integer year,
+            Integer month
+    ) {
+        this.investmentPercentage = investmentPercentage;
+        this.leisurePercentage = leisurePercentage;
+        this.currentBalance = currentBalance;
+        this.year = year;
+        this.month = month;
+        this.createdAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
