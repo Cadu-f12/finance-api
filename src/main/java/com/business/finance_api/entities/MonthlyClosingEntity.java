@@ -27,10 +27,10 @@ public class MonthlyClosingEntity {
     @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<InvestmentAllocationEntity> investmentAllocation;
 
-    @Column(name = "month", nullable = false, unique = true, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")
+    @Column(name = "month", nullable = false, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")
     private Integer month;
 
-    @Column(name = "year", nullable = false, unique = true)
+    @Column(name = "year", nullable = false)
     private Integer year;
 
     @Column(name = "current_balance", nullable = false, precision = 10, scale = 2)
