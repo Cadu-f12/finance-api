@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InvestmentAllocationRepository extends JpaRepository<InvestmentAllocationEntity, Long> {
-
+    public boolean existsByModality(String modality);
 }

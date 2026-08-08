@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MonthlyExpenseRepository extends JpaRepository<MonthlyExpenseEntity, Long> {
-
+    public boolean existsByName(String name);
 }

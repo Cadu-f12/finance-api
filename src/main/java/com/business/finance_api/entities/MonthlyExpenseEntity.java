@@ -18,7 +18,7 @@ public class MonthlyExpenseEntity {
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthly_closing;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
     @Column(name = "description",columnDefinition = "TEXT")
@@ -41,15 +41,14 @@ public class MonthlyExpenseEntity {
             String name,
             String description,
             BigDecimal amount,
-            ExpenseType expenseType,
-            LocalDateTime createdAt
+            ExpenseType expenseType
     ) {
         this.monthly_closing = monthly_closing;
         this.name = name;
         this.description = description;
         this.amount = amount;
         this.expenseType = expenseType;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {

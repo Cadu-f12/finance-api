@@ -16,7 +16,7 @@ public class InvestmentAllocationEntity {
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthly_closing;
 
-    @Column(name = "modality", length = 100, nullable = false)
+    @Column(name = "modality", length = 100, unique = true ,nullable = false)
     private String modality;
 
     @Column(name = "percentage", nullable = false, precision = 5, scale = 4)
@@ -28,15 +28,14 @@ public class InvestmentAllocationEntity {
     protected InvestmentAllocationEntity() {}
 
     public InvestmentAllocationEntity(
-            LocalDateTime createdAt,
+            MonthlyClosingEntity monthly_closing,
             BigDecimal percentage,
-            String modality,
-            MonthlyClosingEntity monthly_closing
+            String modality
     ) {
-        this.createdAt = createdAt;
+        this.monthly_closing = monthly_closing;
         this.percentage = percentage;
         this.modality = modality;
-        this.monthly_closing = monthly_closing;
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {

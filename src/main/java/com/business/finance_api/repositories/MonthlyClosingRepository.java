@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MonthlyClosingRepository extends JpaRepository<MonthlyClosingEntity, Long> {
+    public boolean existsByYearAndMonth(Integer year, Integer month);
 
+    public MonthlyClosingEntity findByYearAndMonth(Integer year, Integer month);
 }
