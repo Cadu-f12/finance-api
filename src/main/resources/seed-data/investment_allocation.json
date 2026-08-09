@@ -1,0 +1,104 @@
+[
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "percentage": 0.50,
+    "modality": "Porquinho CDB"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "percentage": 0.50,
+    "modality": "CDB Liquidez diária"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "percentage": 0.00,
+    "modality": "LCI/LCA"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "percentage": 0.00,
+    "modality": "FIIS"
+  },
+
+
+
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "percentage": 0.00,
+    "modality": "Porquinho CDB"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "percentage": 0.70,
+    "modality": "CDB Liquidez diária"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "percentage": 0.30,
+    "modality": "LCI/LCA"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "percentage": 0.00,
+    "modality": "FIIS"
+  },
+
+
+
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "percentage": 0.50,
+    "modality": "Porquinho CDB"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "percentage": 0.25,
+    "modality": "CDB Liquidez diária"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "percentage": 0.25,
+    "modality": "LCI/LCA"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "percentage": 0.00,
+    "modality": "FIIS"
+  }
+]

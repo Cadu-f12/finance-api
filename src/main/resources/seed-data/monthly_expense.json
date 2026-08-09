@@ -1,0 +1,278 @@
+[
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Cartão estudante",
+    "description": "Cartão estudante para andar de onibus",
+    "amount": 50.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Conta da internet",
+    "description": "Conta da internet SIM.DIGITAL",
+    "amount": 59.95,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Corte de cabelo",
+    "description": "Corte de cabelo que realizo 2 vezes por mês (45 reais cada corte)",
+    "amount": 90.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Academia",
+    "description": "Plano de academia Pratique Fitness",
+    "amount": 90.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Catina do Senai",
+    "description": "Dinheiro reservado para comprar comida no dia-a-dia",
+    "amount": 91.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Plano de internet Vivo",
+    "description": "Conta do meu plano de internet vivo",
+    "amount": 0,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Água e luz",
+    "description": "Conta de agua e luz",
+    "amount": 85.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Fatura do cartão",
+    "description": "Despesas com o cartão de crédito",
+    "amount": 0.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 2
+    },
+    "name": "Produtos de hiegene",
+    "description": "Despesas com produtos como acnizil, acntine e protetor solar",
+    "amount": 0.00,
+    "expenseType": "VARIABLE"
+  },
+
+
+
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Cartão estudante",
+    "description": "Cartão estudante para andar de onibus",
+    "amount": 50.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Conta da internet",
+    "description": "Conta da internet SIM.DIGITAL",
+    "amount": 59.95,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Corte de cabelo",
+    "description": "Corte de cabelo que realizo 2 vezes por mês (50 reais cada corte)",
+    "amount": 100.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Academia",
+    "description": "Plano de academia Pratique Fitness",
+    "amount": 0.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Catina do Senai",
+    "description": "Dinheiro reservado para comprar comida no dia-a-dia",
+    "amount": 91.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Plano de internet Vivo",
+    "description": "Conta do meu plano de internet vivo",
+    "amount": 45,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Água e luz",
+    "description": "Conta de agua e luz",
+    "amount": 85.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Fatura do cartão",
+    "description": "Despesas com o cartão de crédito",
+    "amount": 0.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 3
+    },
+    "name": "Produtos de hiegene",
+    "description": "Despesas com produtos como acnizil, acntine e protetor solar",
+    "amount": 0.00,
+    "expenseType": "VARIABLE"
+  },
+
+
+
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Cartão estudante",
+    "description": "Cartão estudante para andar de onibus",
+    "amount": 60.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Conta da internet",
+    "description": "Conta da internet SIM.DIGITAL",
+    "amount": 59.95,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Corte de cabelo",
+    "description": "Corte de cabelo que realizo 2 vezes por mês (50 reais cada corte)",
+    "amount": 100.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Academia",
+    "description": "Plano de academia Pratique Fitness",
+    "amount": 120.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Catina do Senai",
+    "description": "Dinheiro reservado para comprar comida no dia-a-dia",
+    "amount": 100.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Plano de internet Vivo",
+    "description": "Conta do meu plano de internet vivo",
+    "amount": 41.00,
+    "expenseType": "FIXED"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Água e luz",
+    "description": "Conta de agua e luz",
+    "amount": 85.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Fatura do cartão",
+    "description": "Despesas com o cartão de crédito",
+    "amount": 32.00,
+    "expenseType": "VARIABLE"
+  },
+  {
+    "monthlyClosing": {
+      "year": 2026,
+      "month": 4
+    },
+    "name": "Produtos de hiegene",
+    "description": "Despesas com produtos como acnizil, acntine e protetor solar",
+    "amount": 105.41,
+    "expenseType": "VARIABLE"
+  }
+]
