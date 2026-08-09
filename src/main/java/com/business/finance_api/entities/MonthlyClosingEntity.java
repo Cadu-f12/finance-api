@@ -21,10 +21,10 @@ public class MonthlyClosingEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<MonthlyExpenseEntity> monthlyExpense;
 
-    @OneToMany(mappedBy = "monthly_closing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<InvestmentAllocationEntity> investmentAllocation;
 
     @Column(name = "month", nullable = false, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")

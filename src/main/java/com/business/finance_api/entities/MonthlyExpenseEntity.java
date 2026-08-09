@@ -16,7 +16,7 @@ public class MonthlyExpenseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "monthly_closing_id")
-    private MonthlyClosingEntity monthly_closing;
+    private MonthlyClosingEntity monthlyClosing;
 
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
@@ -37,13 +37,13 @@ public class MonthlyExpenseEntity {
     protected MonthlyExpenseEntity() {}
 
     public MonthlyExpenseEntity(
-            MonthlyClosingEntity monthly_closing,
+            MonthlyClosingEntity monthlyClosing,
             String name,
             String description,
             BigDecimal amount,
             ExpenseType expenseType
     ) {
-        this.monthly_closing = monthly_closing;
+        this.monthlyClosing = monthlyClosing;
         this.name = name;
         this.description = description;
         this.amount = amount;
@@ -59,12 +59,12 @@ public class MonthlyExpenseEntity {
         this.id = id;
     }
 
-    public MonthlyClosingEntity getMonthly_closing() {
-        return monthly_closing;
+    public MonthlyClosingEntity getMonthlyClosing() {
+        return monthlyClosing;
     }
 
-    public void setMonthly_closing(MonthlyClosingEntity monthly_closing) {
-        this.monthly_closing = monthly_closing;
+    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
+        this.monthlyClosing = monthlyClosing;
     }
 
     public String getName() {

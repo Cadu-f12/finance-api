@@ -14,7 +14,7 @@ public class InvestmentAllocationEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "monthly_closing_id")
-    private MonthlyClosingEntity monthly_closing;
+    private MonthlyClosingEntity monthlyClosing;
 
     @Column(name = "modality", length = 100, unique = true ,nullable = false)
     private String modality;
@@ -28,11 +28,11 @@ public class InvestmentAllocationEntity {
     protected InvestmentAllocationEntity() {}
 
     public InvestmentAllocationEntity(
-            MonthlyClosingEntity monthly_closing,
+            MonthlyClosingEntity monthlyClosing,
             BigDecimal percentage,
             String modality
     ) {
-        this.monthly_closing = monthly_closing;
+        this.monthlyClosing = monthlyClosing;
         this.percentage = percentage;
         this.modality = modality;
         this.createdAt = LocalDateTime.now();
@@ -46,12 +46,12 @@ public class InvestmentAllocationEntity {
         this.id = id;
     }
 
-    public MonthlyClosingEntity getMonthly_closing() {
-        return monthly_closing;
+    public MonthlyClosingEntity getMonthlyClosing() {
+        return monthlyClosing;
     }
 
-    public void setMonthly_closing(MonthlyClosingEntity monthly_closing) {
-        this.monthly_closing = monthly_closing;
+    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
+        this.monthlyClosing = monthlyClosing;
     }
 
     public String getModality() {
