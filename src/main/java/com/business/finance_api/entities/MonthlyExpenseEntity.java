@@ -7,7 +7,15 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "monthly_expense")
+@Table(
+        name = "monthly_expense",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_monthly_closing_name",
+                        columnNames = {"monthly_closing_id", "name"}
+                )
+        }
+)
 public class MonthlyExpenseEntity {
 
     @Id
@@ -18,7 +26,7 @@ public class MonthlyExpenseEntity {
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthlyClosing;
 
-    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     @Column(name = "description",columnDefinition = "TEXT")
@@ -60,7 +68,7 @@ public class MonthlyExpenseEntity {
     }
 
     public MonthlyClosingEntity getMonthlyClosing() {
-        return monthlyClosing;
+        return this.monthlyClosing;
     }
 
     public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {

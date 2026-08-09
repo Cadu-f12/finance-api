@@ -6,7 +6,15 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "investment_allocation")
+@Table(
+        name = "investment_allocation",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_monthly_closing_modality",
+                        columnNames = {"monthly_closing_id", "modality"}
+                )
+        }
+)
 public class InvestmentAllocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +24,7 @@ public class InvestmentAllocationEntity {
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthlyClosing;
 
-    @Column(name = "modality", length = 100, unique = true ,nullable = false)
+    @Column(name = "modality", length = 100, nullable = false)
     private String modality;
 
     @Column(name = "percentage", nullable = false, precision = 5, scale = 4)
