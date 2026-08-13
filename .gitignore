@@ -1,0 +1,24 @@
+cat << 'EOF' > .gitignore
+# Maven Build
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDEs e Editores
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# Logs e Arquivos Temporários
+*.log
+*.tmp
+.DS_Store
+
+# Ambientes
+.env
+EOF
