@@ -1,23 +1,23 @@
 [
   {
+    "referenceDate": "2026-02-01",
     "investmentPercentage": 0.40,
     "leisurePercentage": 0.60,
     "currentBalance": 946.51,
-    "year": 2026,
-    "month": 2
+    "salary": 914.83
   },
   {
+    "referenceDate": "2026-03-01",
     "investmentPercentage": 0.55,
     "leisurePercentage": 0.45,
     "currentBalance": 956.67,
-    "year": 2026,
-    "month": 3
+    "salary": 914.83
   },
   {
+    "referenceDate": "2026-04-01",
     "investmentPercentage": 0.15,
     "leisurePercentage": 0.85,
     "currentBalance": 2897.02,
-    "year": 2026,
-    "month": 4
+    "salary": 914.83
   }
 ]

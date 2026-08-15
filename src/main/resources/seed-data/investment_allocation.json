@@ -1,104 +1,62 @@
 [
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 2
-    },
-    "percentage": 0.50,
-    "modality": "Porquinho CDB"
+    "percentage": 0.5,
+    "monthlyClosing": "2026-02-01",
+    "modalityName": "Porquinho"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 2
-    },
-    "percentage": 0.50,
-    "modality": "CDB Liquidez diária"
+    "percentage": 0.5,
+    "monthlyClosing": "2026-02-01",
+    "modalityName": "CDB"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 2
-    },
     "percentage": 0.00,
-    "modality": "LCI/LCA"
+    "monthlyClosing": "2026-02-01",
+    "modalityName": "LCI/LCA"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 2
-    },
     "percentage": 0.00,
-    "modality": "FIIS"
+    "monthlyClosing": "2026-02-01",
+    "modalityName": "FIIS"
   },
-
-
-
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 3
-    },
     "percentage": 0.00,
-    "modality": "Porquinho CDB"
+    "monthlyClosing": "2026-03-01",
+    "modalityName": "Porquinho"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 3
-    },
     "percentage": 0.70,
-    "modality": "CDB Liquidez diária"
+    "monthlyClosing": "2026-03-01",
+    "modalityName": "CDB"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 3
-    },
     "percentage": 0.30,
-    "modality": "LCI/LCA"
+    "monthlyClosing": "2026-03-01",
+    "modalityName": "LCI/LCA"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 3
-    },
     "percentage": 0.00,
-    "modality": "FIIS"
+    "monthlyClosing": "2026-03-01",
+    "modalityName": "FIIS"
   },
-
-
-
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 4
-    },
     "percentage": 0.50,
-    "modality": "Porquinho CDB"
+    "monthlyClosing": "2026-04-01",
+    "modalityName": "Porquinho"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 4
-    },
     "percentage": 0.25,
-    "modality": "CDB Liquidez diária"
+    "monthlyClosing": "2026-04-01",
+    "modalityName": "CDB"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 4
-    },
     "percentage": 0.25,
-    "modality": "LCI/LCA"
+    "monthlyClosing": "2026-04-01",
+    "modalityName": "LCI/LCA"
   },
   {
-    "monthlyClosing": {
-      "year": 2026,
-      "month": 4
-    },
     "percentage": 0.00,
-    "modality": "FIIS"
+    "monthlyClosing": "2026-04-01",
+    "modalityName": "FIIS"
   }
 ]

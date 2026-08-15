@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Cartão estudante",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Conta da internet",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Corte de cabelo",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Academia",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Cantina do Senai",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Plano de internet Vivo",
+    "description": null,
+    "isFixed": true
+  },
+  {
+    "name": "Água e luz",
+    "description": null,
+    "isFixed": false
+  },
+  {
+    "name": "Fatura do cartão",
+    "description": null,
+    "isFixed": false
+  },
+  {
+    "name": "Produtos de hiegiene",
+    "description": null,
+    "isFixed": false
+  }
+]

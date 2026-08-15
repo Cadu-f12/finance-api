@@ -1,114 +1,149 @@
 package com.business.finance_api.seed_script;
 
-import com.business.finance_api.entities.InvestmentAllocationEntity;
-import com.business.finance_api.entities.MonthlyClosingEntity;
-import com.business.finance_api.entities.MonthlyExpenseEntity;
-import com.business.finance_api.repositories.InvestmentAllocationRepository;
-import com.business.finance_api.repositories.MonthlyClosingRepository;
-import com.business.finance_api.repositories.MonthlyExpenseRepository;
+import com.business.finance_api.entities.*;
+import com.business.finance_api.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
-@Profile("dev")
 public class DataBaseSeeder implements CommandLineRunner {
 
     private final MonthlyClosingRepository monthlyClosingRepository;
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final InvestmentAllocationRepository investmentAllocationRepository;
+    private final ModalitiesRepository modalitiesRepository;
+    private final ExpenseCategoriesRepository expenseCategoriesRepository;
     private final JsonSeedLoader seedFromJson;
 
     public DataBaseSeeder(
         MonthlyClosingRepository monthlyClosingRepository,
         MonthlyExpenseRepository monthlyExpenseRepository,
         InvestmentAllocationRepository investmentAllocationRepository,
+        ExpenseCategoriesRepository expenseCategoriesRepository,
+        ModalitiesRepository modalitiesRepository,
         JsonSeedLoader seedFromJson
     ) {
         this.monthlyClosingRepository = monthlyClosingRepository;
         this.monthlyExpenseRepository = monthlyExpenseRepository;
         this.investmentAllocationRepository = investmentAllocationRepository;
+        this.expenseCategoriesRepository = expenseCategoriesRepository;
+        this.modalitiesRepository = modalitiesRepository;
         this.seedFromJson = seedFromJson;
     }
 
     @Override
     public void run(String... args) throws Exception {
         List<MonthlyClosingEntity> closingEntities = seedFromJson.getMonthlyClosingFromJSON("seed-data/monthly_closing.json");
-        List<MonthlyExpenseEntity> expenseEntities = seedFromJson.getMonthExpenseFromJSON("seed-data/monthly_expense.json");
-        List<InvestmentAllocationEntity> investmentEntities = seedFromJson.getInvestmentFromJSON("seed-data/investment_allocation.json");
+        List<ExpenseCategoriesEntity> expenseCategoriesEntities = seedFromJson.getExpensesFromJSON("seed-data/expense_categories.json");
+        List<ModalitiesEntity> modalitiesEntities = seedFromJson.getModalitiesFromJSON("seed-data/modalities.json");
+        List<MonthlyExpenseSeedDTO> expenseEntities = seedFromJson.getMonthExpenseFromJSON("seed-data/monthly_expense.json");
+        List<InvestmentAllocationSeedDTO> investmentEntities = seedFromJson.getInvestmentFromJSON("seed-data/investment_allocation.json");
 
         this.seedMonthlyClosing(closingEntities);
-        this.seedExpenseClosing(expenseEntities);
+        this.seedExpenseCategories(expenseCategoriesEntities);
+        this.seedModalities(modalitiesEntities);
         this.seedInvesmentAllocation(investmentEntities);
+        this.seedExpenseClosing(expenseEntities);
     }
 
     private void seedMonthlyClosing(List<MonthlyClosingEntity> entities) {
         for (MonthlyClosingEntity entity : entities) {
-            Integer year = entity.getYear();
-            Integer month = entity.getMonth();
+            LocalDate date = entity.getReferenceDate();
+            String formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            if (monthlyClosingRepository.existsByYearAndMonth(year, month)) {
-                System.err.printf("[SEED SKIPPED] Monthly closing not found for period %02d/%d.%n", month, year);
-                return;
+            if (monthlyClosingRepository.existsByReferenceDate(date)) {
+                System.err.printf("[SEED SKIPPED] Monthly closing ALREADY EXISTS for period %s.%n", formattedDate);
+                continue;
             }
 
             monthlyClosingRepository.save(entity);
 
-            System.out.printf("[SEED SUCCESS] Saved monthly closing for period %02d/%d.%n", month, year);
+            System.out.printf("[SEED SUCCESS] Saved monthly closing for period %s.%n", formattedDate);
         }
     }
 
-    private void seedExpenseClosing(List<MonthlyExpenseEntity> entities) {
-        for (MonthlyExpenseEntity entity : entities) {
-            Integer year = entity.getMonthlyClosing().getYear();
-            Integer month = entity.getMonthlyClosing().getMonth();
-            String name = entity.getName();
+    private void seedModalities(List<ModalitiesEntity> entities) {
+        for (ModalitiesEntity entity : entities) {
+            String modalityName = entity.getName();
 
-            if (!monthlyClosingRepository.existsByYearAndMonth(year, month)) {
-                System.err.printf("[SEED SKIPPED] Monthly closing not found for period %02d/%d.%n", month, year);
+            if (this.modalitiesRepository.existsByName(modalityName)) {
+                System.err.printf("[SEED SKIPPED] Modality '%s' already EXISTS!%n", modalityName);
                 continue;
             }
 
-            MonthlyClosingEntity closingParent = monthlyClosingRepository.findByYearAndMonth(year, month);
-
-            if (monthlyExpenseRepository.existsByMonthlyClosingAndName(closingParent, name)) {
-                System.err.printf("[SEED SKIPPED] Expense '%s' already exists.%n", name);
-                continue;
-            }
-
-            entity.setMonthlyClosing(closingParent);
-
-            monthlyExpenseRepository.save(entity);
-
-            System.out.printf("[SEED SUCCESS] Saved expense '%s' for period %02d/%d.%n", name, month, year);
+            this.modalitiesRepository.save(entity);
+            System.out.printf("[SEED SUCCESS] Saved modality '%s' with success.%n", modalityName);
         }
     }
 
-    private void seedInvesmentAllocation(List<InvestmentAllocationEntity> entities) {
-        for (InvestmentAllocationEntity entity : entities) {
-            Integer year = entity.getMonthlyClosing().getYear();
-            Integer month = entity.getMonthlyClosing().getMonth();
-            String modality = entity.getModality();
+    private void seedExpenseCategories(List<ExpenseCategoriesEntity> entities) {
+        for (ExpenseCategoriesEntity entity : entities) {
+            String expenseName = entity.getName();
 
-            if (!monthlyClosingRepository.existsByYearAndMonth(year, month)) {
-                System.err.printf("[SEED SKIPPED] Monthly closing not found for period %02d/%d.%n", month, year);
+            if (this.modalitiesRepository.existsByName(expenseName)) {
+                System.err.printf("[SEED SKIPPED] Expense '%s' already EXISTS!%n", expenseName);
                 continue;
             }
 
-            MonthlyClosingEntity closingParent = monthlyClosingRepository.findByYearAndMonth(year, month);
+            this.expenseCategoriesRepository.save(entity);
+            System.out.printf("[SEED SUCCESS] Saved expense '%s' with success.%n", expenseName);
+        }
+    }
 
-            if (investmentAllocationRepository.existsByMonthlyClosingAndModality(closingParent, modality)) {
-                System.err.printf("[SEED SKIPPED] Investment of modality '%s' already exists.%n", modality);
+    private void seedExpenseClosing(List<MonthlyExpenseSeedDTO> entities) {
+        for (MonthlyExpenseSeedDTO entity : entities) {
+            LocalDate referenceDate = entity.monthlyClosing();
+            String expenseName = entity.expenseCategory();
+
+            String formattedDate = referenceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            if (!this.monthlyClosingRepository.existsByReferenceDate(referenceDate)) {
+                System.err.printf("[SEED SKIPPED] Monthly closing NOT FOUND for period %s.%n", formattedDate);
+                continue;
+            }
+            if (!this.expenseCategoriesRepository.existsByName(expenseName)) {
+                System.err.printf("[SEED SKIPPED] Expense '%s' NOT FOUND!%n", expenseName);
                 continue;
             }
 
-            entity.setMonthlyClosing(closingParent);
+            MonthlyClosingEntity monthlyClosingEntity = this.monthlyClosingRepository.findByReferenceDate(referenceDate);
+            ExpenseCategoriesEntity expenseCategoryEntity = this.expenseCategoriesRepository.findByName(expenseName);
 
-            investmentAllocationRepository.save(entity);
+            MonthlyExpenseEntity monthlyExpense = new MonthlyExpenseEntity(null, entity.amount(), monthlyClosingEntity, expenseCategoryEntity);
 
-            System.out.printf("[SEED SUCCESS] Saved investment '%s' for period %02d/%d.%n", modality, month, year);
+            this.monthlyExpenseRepository.save(monthlyExpense);
+        }
+    }
+
+
+
+    private void seedInvesmentAllocation(List<InvestmentAllocationSeedDTO> entities) {
+        for (InvestmentAllocationSeedDTO entity : entities) {
+            LocalDate referenceDate = entity.monthlyClosing();
+            String modalityName = entity.modalityName();
+
+            String formattedDate = referenceDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            if (!this.monthlyClosingRepository.existsByReferenceDate(referenceDate)) {
+                System.err.printf("[SEED SKIPPED] Monthly closing NOT FOUND for period %s.%n", formattedDate);
+                continue;
+            }
+            if (!this.modalitiesRepository.existsByName(modalityName)) {
+                System.err.printf("[SEED SKIPPED] Modality '%s' NOT FOUND!%n", modalityName);
+                continue;
+            }
+
+            MonthlyClosingEntity monthlyClosingEntity = this.monthlyClosingRepository.findByReferenceDate(referenceDate);
+            ModalitiesEntity modalitiesEntity = this.modalitiesRepository.findByName(modalityName);
+
+            InvestmentAllocationEntity investmentAllocation = new InvestmentAllocationEntity(null, entity.percentage(), monthlyClosingEntity, modalitiesEntity);
+
+            this.investmentAllocationRepository.save(investmentAllocation);
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.business.finance_api.seed_script;
 
-import com.business.finance_api.entities.InvestmentAllocationEntity;
-import com.business.finance_api.entities.MonthlyClosingEntity;
-import com.business.finance_api.entities.MonthlyExpenseEntity;
+import com.business.finance_api.entities.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
@@ -25,12 +23,20 @@ public class JsonSeedLoader {
         return readListResource(path, new TypeReference<List<MonthlyClosingEntity>>() {});
     }
 
-    public List<MonthlyExpenseEntity> getMonthExpenseFromJSON(String path) {
-        return readListResource(path, new TypeReference<List<MonthlyExpenseEntity>>() {});
+    public List<ModalitiesEntity> getModalitiesFromJSON(String path) {
+        return readListResource(path, new TypeReference<List<ModalitiesEntity>>() {});
     }
 
-    public List<InvestmentAllocationEntity> getInvestmentFromJSON(String path) {
-        return readListResource(path, new TypeReference<List<InvestmentAllocationEntity>>() {});
+    public List<ExpenseCategoriesEntity> getExpensesFromJSON(String path) {
+        return readListResource(path, new TypeReference<List<ExpenseCategoriesEntity>>() {});
+    }
+
+    public List<MonthlyExpenseSeedDTO> getMonthExpenseFromJSON(String path) {
+        return readListResource(path, new TypeReference<List<MonthlyExpenseSeedDTO>>() {});
+    }
+
+    public List<InvestmentAllocationSeedDTO> getInvestmentFromJSON(String path) {
+        return readListResource(path, new TypeReference<List<InvestmentAllocationSeedDTO>>() {});
     }
 
     private <T> List<T> readListResource(String path, TypeReference<List<T>> typeReference) {
