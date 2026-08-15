@@ -3,35 +3,22 @@ package com.business.finance_api.entities;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(
-    name = "monthly_closing",
-    uniqueConstraints = {
-        @UniqueConstraint(
-                name = "uk_monthly_closing_month_year",
-                columnNames = {"month", "year"}
-        )
-    }
-)
+@Table(name = "monthly_closing")
 public class MonthlyClosingEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<MonthlyExpenseEntity> monthlyExpense;
+    @Column(name = "reference_date", unique = true, nullable = false)
+    private LocalDate referenceDate;
 
-    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<InvestmentAllocationEntity> investmentAllocation;
-
-    @Column(name = "month", nullable = false, columnDefinition = "INT CHECK (month >= 1 AND month <= 12)")
-    private Integer month;
-
-    @Column(name = "year", nullable = false)
-    private Integer year;
+    @Column(name = "salary", precision = 10, scale = 2)
+    private BigDecimal salary;
 
     @Column(name = "current_balance", nullable = false, precision = 10, scale = 2)
     private BigDecimal currentBalance;
@@ -45,21 +32,24 @@ public class MonthlyClosingEntity {
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<MonthlyExpenseEntity> monthlyExpense;
+
+    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<InvestmentAllocationEntity> investmentAllocation;
+
     protected MonthlyClosingEntity() {}
 
     public MonthlyClosingEntity(
             BigDecimal investmentPercentage,
             BigDecimal leisurePercentage,
             BigDecimal currentBalance,
-            Integer year,
-            Integer month
+            LocalDate referenceDate
     ) {
         this.investmentPercentage = investmentPercentage;
         this.leisurePercentage = leisurePercentage;
         this.currentBalance = currentBalance;
-        this.year = year;
-        this.month = month;
-        this.createdAt = LocalDateTime.now();
+        this.referenceDate = referenceDate;
     }
 
     public Long getId() {
@@ -70,36 +60,20 @@ public class MonthlyClosingEntity {
         this.id = id;
     }
 
-    public List<MonthlyExpenseEntity> getMonthlyExpense() {
-        return monthlyExpense;
+    public LocalDate getReferenceDate() {
+        return referenceDate;
     }
 
-    public void setMonthlyExpense(List<MonthlyExpenseEntity> monthlyExpense) {
-        this.monthlyExpense = monthlyExpense;
+    public void setReferenceDate(LocalDate referenceDate) {
+        this.referenceDate = referenceDate;
     }
 
-    public List<InvestmentAllocationEntity> getInvestmentAllocation() {
-        return investmentAllocation;
+    public BigDecimal getSalary() {
+        return salary;
     }
 
-    public void setInvestmentAllocation(List<InvestmentAllocationEntity> investmentAllocation) {
-        this.investmentAllocation = investmentAllocation;
-    }
-
-    public Integer getMonth() {
-        return month;
-    }
-
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
     }
 
     public BigDecimal getCurrentBalance() {
@@ -132,5 +106,21 @@ public class MonthlyClosingEntity {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<MonthlyExpenseEntity> getMonthlyExpense() {
+        return monthlyExpense;
+    }
+
+    public void setMonthlyExpense(List<MonthlyExpenseEntity> monthlyExpense) {
+        this.monthlyExpense = monthlyExpense;
+    }
+
+    public List<InvestmentAllocationEntity> getInvestmentAllocation() {
+        return investmentAllocation;
+    }
+
+    public void setInvestmentAllocation(List<InvestmentAllocationEntity> investmentAllocation) {
+        this.investmentAllocation = investmentAllocation;
     }
 }

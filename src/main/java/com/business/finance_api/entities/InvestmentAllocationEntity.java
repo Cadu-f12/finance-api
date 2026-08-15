@@ -6,44 +6,30 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "investment_allocation",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_monthly_closing_modality",
-                        columnNames = {"monthly_closing_id", "modality"}
-                )
-        }
-)
+@Table(name = "investment_allocations")
 public class InvestmentAllocationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "percentage", nullable = false, precision = 5, scale = 4)
+    private BigDecimal percentage;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthlyClosing;
 
-    @Column(name = "modality", length = 100, nullable = false)
-    private String modality;
-
-    @Column(name = "percentage", nullable = false, precision = 5, scale = 4)
-    private BigDecimal percentage;
-
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "modality_id")
+    private ModalitiesEntity modality;
 
     protected InvestmentAllocationEntity() {}
 
-    public InvestmentAllocationEntity(
-            MonthlyClosingEntity monthlyClosing,
-            BigDecimal percentage,
-            String modality
-    ) {
-        this.monthlyClosing = monthlyClosing;
+    public InvestmentAllocationEntity(Long id, BigDecimal percentage, MonthlyClosingEntity monthlyClosing, ModalitiesEntity modality) {
+        this.id = id;
         this.percentage = percentage;
+        this.monthlyClosing = monthlyClosing;
         this.modality = modality;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -54,22 +40,6 @@ public class InvestmentAllocationEntity {
         this.id = id;
     }
 
-    public MonthlyClosingEntity getMonthlyClosing() {
-        return monthlyClosing;
-    }
-
-    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
-        this.monthlyClosing = monthlyClosing;
-    }
-
-    public String getModality() {
-        return modality;
-    }
-
-    public void setModality(String modality) {
-        this.modality = modality;
-    }
-
     public BigDecimal getPercentage() {
         return percentage;
     }
@@ -78,11 +48,19 @@ public class InvestmentAllocationEntity {
         this.percentage = percentage;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public MonthlyClosingEntity getMonthlyClosing() {
+        return monthlyClosing;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
+        this.monthlyClosing = monthlyClosing;
+    }
+
+    public ModalitiesEntity getModality() {
+        return modality;
+    }
+
+    public void setModality(ModalitiesEntity modality) {
+        this.modality = modality;
     }
 }

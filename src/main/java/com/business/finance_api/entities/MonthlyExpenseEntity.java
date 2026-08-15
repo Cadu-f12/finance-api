@@ -7,56 +7,31 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(
-        name = "monthly_expense",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_monthly_closing_name",
-                        columnNames = {"monthly_closing_id", "name"}
-                )
-        }
-)
+@Table(name = "monthly_expenses")
 public class MonthlyExpenseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "monthly_closing_id")
     private MonthlyClosingEntity monthlyClosing;
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
-
-    @Column(name = "description",columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "amount", nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "expense_type", nullable = false, length = 50)
-    private ExpenseType expenseType;
-
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id")
+    private ExpenseCategoriesEntity expenseCategory;
 
     protected MonthlyExpenseEntity() {}
 
-    public MonthlyExpenseEntity(
-            MonthlyClosingEntity monthlyClosing,
-            String name,
-            String description,
-            BigDecimal amount,
-            ExpenseType expenseType
-    ) {
-        this.monthlyClosing = monthlyClosing;
-        this.name = name;
-        this.description = description;
+    public MonthlyExpenseEntity(Long id, BigDecimal amount, MonthlyClosingEntity monthlyClosing, ExpenseCategoriesEntity expenseCategory) {
+        this.id = id;
         this.amount = amount;
-        this.expenseType = expenseType;
-        this.createdAt = LocalDateTime.now();
+        this.monthlyClosing = monthlyClosing;
+        this.expenseCategory = expenseCategory;
     }
 
     public Long getId() {
@@ -67,30 +42,6 @@ public class MonthlyExpenseEntity {
         this.id = id;
     }
 
-    public MonthlyClosingEntity getMonthlyClosing() {
-        return this.monthlyClosing;
-    }
-
-    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
-        this.monthlyClosing = monthlyClosing;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
@@ -99,20 +50,20 @@ public class MonthlyExpenseEntity {
         this.amount = amount;
     }
 
-    public ExpenseType getExpenseType() {
-        return expenseType;
+    public MonthlyClosingEntity getMonthlyClosing() {
+        return monthlyClosing;
     }
 
-    public void setExpenseType(ExpenseType expenseType) {
-        this.expenseType = expenseType;
+    public void setMonthlyClosing(MonthlyClosingEntity monthlyClosing) {
+        this.monthlyClosing = monthlyClosing;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public ExpenseCategoriesEntity getExpenseCategory() {
+        return expenseCategory;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setExpenseCategory(ExpenseCategoriesEntity expenseCategory) {
+        this.expenseCategory = expenseCategory;
     }
 }
 
