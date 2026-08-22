@@ -85,7 +85,7 @@ public class DataBaseSeeder implements CommandLineRunner {
         for (ExpenseCategoriesEntity entity : entities) {
             String expenseName = entity.getName();
 
-            if (this.modalitiesRepository.existsByName(expenseName)) {
+            if (this.expenseCategoriesRepository.existsByName(expenseName)) {
                 System.err.printf("[SEED SKIPPED] Expense '%s' already EXISTS!%n", expenseName);
                 continue;
             }
