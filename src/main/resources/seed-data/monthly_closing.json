@@ -4,20 +4,26 @@
     "investmentPercentage": 0.40,
     "leisurePercentage": 0.60,
     "currentBalance": 946.51,
-    "salary": 914.83
+    "salary": 914.83,
+    "status": "CLOSED",
+    "closedAt": "2026-02-07T10:00:00"
   },
   {
     "referenceDate": "2026-03-01",
     "investmentPercentage": 0.55,
     "leisurePercentage": 0.45,
     "currentBalance": 956.67,
-    "salary": 914.83
+    "salary": 914.83,
+    "status": "CLOSED",
+    "closedAt": "2026-03-07T10:00:00"
   },
   {
     "referenceDate": "2026-04-01",
     "investmentPercentage": 0.15,
     "leisurePercentage": 0.85,
     "currentBalance": 2897.02,
-    "salary": 914.83
+    "salary": 914.83,
+    "status": "CLOSED",
+    "closedAt": "2026-04-07T10:00:00"
   }
 ]

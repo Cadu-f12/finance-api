@@ -57,13 +57,19 @@ public class DataBaseSeeder implements CommandLineRunner {
             String formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
             if (monthlyClosingRepository.existsByReferenceDate(date)) {
-                System.err.printf("[SEED SKIPPED] Monthly closing ALREADY EXISTS for period %s.%n", formattedDate);
+                System.err.printf(
+                        "[SEED SKIPPED] Monthly closing ALREADY EXISTS for period %s.%n",
+                        formattedDate
+                );
                 continue;
             }
 
             monthlyClosingRepository.save(entity);
 
-            System.out.printf("[SEED SUCCESS] Saved monthly closing for period %s.%n", formattedDate);
+            System.out.printf(
+                    "[SEED SUCCESS] Saved monthly closing for period %s.%n",
+                    formattedDate
+            );
         }
     }
 

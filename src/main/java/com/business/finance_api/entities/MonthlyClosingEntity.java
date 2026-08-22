@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "monthly_closing")
 public class MonthlyClosingEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,14 +30,34 @@ public class MonthlyClosingEntity {
     @Column(name = "investment_percentage", nullable = false, precision = 5, scale = 4)
     private BigDecimal investmentPercentage;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private MonthlyClosingStatus status = MonthlyClosingStatus.OPEN;
+
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
+
+    @Column(
+            name = "created_at",
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+            insertable = false,
+            updatable = false
+    )
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<MonthlyExpenseEntity> monthlyExpense;
+    @OneToMany(
+            mappedBy = "monthlyClosing",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE
+    )
+    private List<MonthlyExpenseEntity> monthlyExpenses;
 
-    @OneToMany(mappedBy = "monthlyClosing", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<InvestmentAllocationEntity> investmentAllocation;
+    @OneToMany(
+            mappedBy = "monthlyClosing",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE
+    )
+    private List<InvestmentAllocationEntity> investmentAllocations;
 
     protected MonthlyClosingEntity() {}
 
@@ -50,14 +71,11 @@ public class MonthlyClosingEntity {
         this.leisurePercentage = leisurePercentage;
         this.currentBalance = currentBalance;
         this.referenceDate = referenceDate;
+        this.status = MonthlyClosingStatus.OPEN;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDate getReferenceDate() {
@@ -100,27 +118,34 @@ public class MonthlyClosingEntity {
         this.investmentPercentage = investmentPercentage;
     }
 
+    public MonthlyClosingStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getClosedAt() {
+        return closedAt;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public List<MonthlyExpenseEntity> getMonthlyExpenses() {
+        return monthlyExpenses;
     }
 
-    public List<MonthlyExpenseEntity> getMonthlyExpense() {
-        return monthlyExpense;
+    public List<InvestmentAllocationEntity> getInvestmentAllocations() {
+        return investmentAllocations;
     }
 
-    public void setMonthlyExpense(List<MonthlyExpenseEntity> monthlyExpense) {
-        this.monthlyExpense = monthlyExpense;
-    }
+    public void close() {
+        if (this.status == MonthlyClosingStatus.CLOSED) {
+            throw new IllegalStateException(
+                    "Monthly closing is already closed."
+            );
+        }
 
-    public List<InvestmentAllocationEntity> getInvestmentAllocation() {
-        return investmentAllocation;
-    }
-
-    public void setInvestmentAllocation(List<InvestmentAllocationEntity> investmentAllocation) {
-        this.investmentAllocation = investmentAllocation;
+        this.status = MonthlyClosingStatus.CLOSED;
+        this.closedAt = LocalDateTime.now();
     }
 }

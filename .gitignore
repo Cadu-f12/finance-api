@@ -22,3 +22,6 @@ target/
 # Ambientes
 .env
 EOF
+
+# Profiles
+src/main/resources/application-dev.properties
