@@ -18,7 +18,7 @@ public class MonthlyClosingEntity {
     @Column(name = "reference_date", unique = true, nullable = false)
     private LocalDate referenceDate;
 
-    @Column(name = "salary", precision = 10, scale = 2)
+    @Column(name = "salary", nullable = false, precision = 10, scale = 2)
     private BigDecimal salary;
 
     @Column(name = "current_balance", nullable = false, precision = 10, scale = 2)
@@ -32,7 +32,7 @@ public class MonthlyClosingEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private MonthlyClosingStatus status = MonthlyClosingStatus.OPEN;
+    private MonthlyClosingStatus status;
 
     @Column(name = "closed_at")
     private LocalDateTime closedAt;
@@ -62,16 +62,18 @@ public class MonthlyClosingEntity {
     protected MonthlyClosingEntity() {}
 
     public MonthlyClosingEntity(
-            BigDecimal investmentPercentage,
-            BigDecimal leisurePercentage,
+            BigDecimal salary,
             BigDecimal currentBalance,
             LocalDate referenceDate
     ) {
-        this.investmentPercentage = investmentPercentage;
-        this.leisurePercentage = leisurePercentage;
+        this.salary = salary;
         this.currentBalance = currentBalance;
         this.referenceDate = referenceDate;
-        this.status = MonthlyClosingStatus.OPEN;
+
+        this.leisurePercentage = BigDecimal.ZERO;
+        this.investmentPercentage = BigDecimal.ZERO;
+
+        this.status = MonthlyClosingStatus.PLANNING;
     }
 
     public Long getId() {
@@ -82,40 +84,20 @@ public class MonthlyClosingEntity {
         return referenceDate;
     }
 
-    public void setReferenceDate(LocalDate referenceDate) {
-        this.referenceDate = referenceDate;
-    }
-
     public BigDecimal getSalary() {
         return salary;
-    }
-
-    public void setSalary(BigDecimal salary) {
-        this.salary = salary;
     }
 
     public BigDecimal getCurrentBalance() {
         return currentBalance;
     }
 
-    public void setCurrentBalance(BigDecimal currentBalance) {
-        this.currentBalance = currentBalance;
-    }
-
     public BigDecimal getLeisurePercentage() {
         return leisurePercentage;
     }
 
-    public void setLeisurePercentage(BigDecimal leisurePercentage) {
-        this.leisurePercentage = leisurePercentage;
-    }
-
     public BigDecimal getInvestmentPercentage() {
         return investmentPercentage;
-    }
-
-    public void setInvestmentPercentage(BigDecimal investmentPercentage) {
-        this.investmentPercentage = investmentPercentage;
     }
 
     public MonthlyClosingStatus getStatus() {
@@ -138,10 +120,28 @@ public class MonthlyClosingEntity {
         return investmentAllocations;
     }
 
-    public void close() {
-        if (this.status == MonthlyClosingStatus.CLOSED) {
+    public void setLeisurePercentage(BigDecimal leisurePercentage) {
+        this.leisurePercentage = leisurePercentage;
+    }
+
+    public void setInvestmentPercentage(BigDecimal investmentPercentage) {
+        this.investmentPercentage = investmentPercentage;
+    }
+
+    public void open() {
+        if (this.status != MonthlyClosingStatus.PLANNING) {
             throw new IllegalStateException(
-                    "Monthly closing is already closed."
+                    "Only a monthly closing in planning can be opened."
+            );
+        }
+
+        this.status = MonthlyClosingStatus.OPEN;
+    }
+
+    public void close() {
+        if (this.status != MonthlyClosingStatus.OPEN) {
+            throw new IllegalStateException(
+                    "Only an open monthly closing can be closed."
             );
         }
 
