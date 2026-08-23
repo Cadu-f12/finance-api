@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExpenseCategoriesRepository extends JpaRepository<ExpenseCategoriesEntity, Long> {
-    public boolean existsByName(String name);
+    boolean existsByName(String name);
 
-    public ExpenseCategoriesEntity findByName(String name);
+    ExpenseCategoriesEntity findByName(String name);
 }

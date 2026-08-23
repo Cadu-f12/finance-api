@@ -120,7 +120,7 @@ public class DataBaseSeeder implements CommandLineRunner {
             MonthlyClosingEntity monthlyClosingEntity = this.monthlyClosingRepository.findByReferenceDate(referenceDate);
             ExpenseCategoriesEntity expenseCategoryEntity = this.expenseCategoriesRepository.findByName(expenseName);
 
-            MonthlyExpenseEntity monthlyExpense = new MonthlyExpenseEntity(null, entity.amount(), monthlyClosingEntity, expenseCategoryEntity);
+            MonthlyExpenseEntity monthlyExpense = new MonthlyExpenseEntity(entity.amount(), monthlyClosingEntity, expenseCategoryEntity);
 
             this.monthlyExpenseRepository.save(monthlyExpense);
         }
