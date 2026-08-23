@@ -64,16 +64,17 @@ public class MonthlyClosingEntity {
     public MonthlyClosingEntity(
             BigDecimal salary,
             BigDecimal currentBalance,
-            LocalDate referenceDate
+            LocalDate referenceDate,
+            BigDecimal leisurePercentage,
+            BigDecimal investmentPercentage,
+            MonthlyClosingStatus status
     ) {
         this.salary = salary;
         this.currentBalance = currentBalance;
         this.referenceDate = referenceDate;
-
-        this.leisurePercentage = BigDecimal.ZERO;
-        this.investmentPercentage = BigDecimal.ZERO;
-
-        this.status = MonthlyClosingStatus.PLANNING;
+        this.leisurePercentage = leisurePercentage;
+        this.investmentPercentage = investmentPercentage;
+        this.status = status;
     }
 
     public Long getId() {
@@ -104,8 +105,16 @@ public class MonthlyClosingEntity {
         return status;
     }
 
+    public void setStatus(MonthlyClosingStatus status) {
+        this.status = status;
+    }
+
     public LocalDateTime getClosedAt() {
         return closedAt;
+    }
+
+    public void setClosedAt(LocalDateTime closedAt) {
+        this.closedAt = closedAt;
     }
 
     public LocalDateTime getCreatedAt() {
