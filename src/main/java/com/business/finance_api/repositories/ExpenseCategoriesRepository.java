@@ -4,9 +4,11 @@ import com.business.finance_api.entities.ExpenseCategoriesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ExpenseCategoriesRepository extends JpaRepository<ExpenseCategoriesEntity, Long> {
     boolean existsByName(String name);
 
-    ExpenseCategoriesEntity findByName(String name);
+    Optional<ExpenseCategoriesEntity> findByName(String name);
 }
