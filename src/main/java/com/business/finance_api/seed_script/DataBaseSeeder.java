@@ -2,6 +2,7 @@ package com.business.finance_api.seed_script;
 
 import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -118,9 +119,10 @@ public class DataBaseSeeder implements CommandLineRunner {
             }
 
             MonthlyClosingEntity monthlyClosingEntity = this.monthlyClosingRepository.findByReferenceDate(referenceDate);
-            ExpenseCategoriesEntity expenseCategoryEntity = this.expenseCategoriesRepository.findByName(expenseName);
+            ExpenseCategoriesEntity expenseCategoryEntity = this.expenseCategoriesRepository.findByName(expenseName)
+                    .orElseThrow(() -> new EntityNotFoundException("Entity not found to seed the database"));
 
-            MonthlyExpenseEntity monthlyExpense = new MonthlyExpenseEntity(null, entity.amount(), monthlyClosingEntity, expenseCategoryEntity);
+            MonthlyExpenseEntity monthlyExpense = new MonthlyExpenseEntity(entity.amount(), monthlyClosingEntity, expenseCategoryEntity);
 
             this.monthlyExpenseRepository.save(monthlyExpense);
         }

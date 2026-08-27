@@ -27,8 +27,7 @@ public class MonthlyExpenseEntity {
 
     protected MonthlyExpenseEntity() {}
 
-    public MonthlyExpenseEntity(Long id, BigDecimal amount, MonthlyClosingEntity monthlyClosing, ExpenseCategoriesEntity expenseCategory) {
-        this.id = id;
+    public MonthlyExpenseEntity(BigDecimal amount, MonthlyClosingEntity monthlyClosing, ExpenseCategoriesEntity expenseCategory) {
         this.amount = amount;
         this.monthlyClosing = monthlyClosing;
         this.expenseCategory = expenseCategory;

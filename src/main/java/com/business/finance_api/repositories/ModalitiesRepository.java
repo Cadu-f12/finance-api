@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ModalitiesRepository extends JpaRepository<ModalitiesEntity, Long> {
-    public boolean existsByName(String name);
+    boolean existsByName(String name);
 
-    public ModalitiesEntity findByName(String name);
+    ModalitiesEntity findByName(String name);
 }
