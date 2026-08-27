@@ -88,24 +88,3 @@ public class PlanningService {
         );
     }
 }
-
-//public void open() {
-//    if (this.status != MonthlyClosingStatus.PLANNING) {
-//        throw new IllegalStateException(
-//                "Only a monthly closing in planning can be opened."
-//        );
-//    }
-//
-//    this.status = MonthlyClosingStatus.OPEN;
-//}
-//
-//public void close() {
-//    if (this.status != MonthlyClosingStatus.OPEN) {
-//        throw new IllegalStateException(
-//                "Only an open monthly closing can be closed."
-//        );
-//    }
-//
-//    this.status = MonthlyClosingStatus.CLOSED;
-//    this.closedAt = LocalDateTime.now();
-//}
