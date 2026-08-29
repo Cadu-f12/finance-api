@@ -1,5 +1,7 @@
 package com.business.finance_api.controllers.planning;
 
+import com.business.finance_api.dto.planning.DistributionRequest;
+import com.business.finance_api.dto.planning.DistributionResponse;
 import com.business.finance_api.dto.planning.LiquidityRequest;
 import com.business.finance_api.dto.planning.LiquidityResponse;
 import com.business.finance_api.services.PlanningService;
@@ -25,5 +27,11 @@ public class PlanningController {
     public ResponseEntity<LiquidityResponse> calculateLiquidity(@Valid @RequestBody LiquidityRequest request) {
         LiquidityResponse response = planningService.calculateLiquidity(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/distribution")
+    public ResponseEntity<DistributionResponse> calculateDistribution(@Valid @RequestBody DistributionRequest request) {
+        DistributionResponse response = planningService.calculateDistribution(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
