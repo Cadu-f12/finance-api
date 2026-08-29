@@ -9,11 +9,11 @@ public record DistributionRequest(
         @JsonProperty("net_balance")
         BigDecimal netBalance,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "Leisure percentage must be greater than or equal to 0.")
         @JsonProperty("leisure_percentage")
         BigDecimal leisurePercentage,
 
-        @PositiveOrZero
+        @PositiveOrZero(message = "Leisure percentage must be greater than or equal to 0.")
         @JsonProperty("investment_percentage")
         BigDecimal investmentPercentage
 ) {

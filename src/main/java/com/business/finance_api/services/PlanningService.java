@@ -90,12 +90,12 @@ public class PlanningService {
     @Transactional
     public DistributionResponse calculateDistribution(DistributionRequest request) {
         if (!this.monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
-            throw new PlanningNotFoundException("The request was not accepted because the liquidity calculation was not performed.");
+            throw new PlanningNotFoundException("The current monthly planning has not completed the liquidity step.");
         }
 
         BigDecimal sumValidation = request.leisurePercentage().add(request.investmentPercentage());
         if (sumValidation.compareTo(new BigDecimal("1")) != 0) {
-            throw new IllegalArgumentException("The sum of leisure percentage and investment percentage is are above 100%");
+            throw new IllegalArgumentException("The sum of leisure percentage and investment percentage is must equal 100%");
         }
 
         MonthlyClosingEntity monthlyClosing = monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);

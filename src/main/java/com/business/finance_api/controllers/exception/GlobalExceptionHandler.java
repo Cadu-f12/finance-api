@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -53,23 +54,34 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<RequestErrorMessage> methodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ResponseEntity<RequestErrorMessage> methodArgumentNotValid(
+            MethodArgumentNotValidException ex
+    ) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+
         RequestErrorMessage response = new RequestErrorMessage(
                 LocalDateTime.now(),
                 400,
                 "Bad Request",
-                ex.getMessage()
+                message
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
     }
 
     @ExceptionHandler(PlanningNotFoundException.class)
     public ResponseEntity<RequestErrorMessage> planningNotFound(PlanningNotFoundException ex) {
         RequestErrorMessage response = new RequestErrorMessage(
                 LocalDateTime.now(),
-                406,
-                "Not Acceptable",
+                409,
+                "Conflit",
                 ex.getMessage()
         );
 
