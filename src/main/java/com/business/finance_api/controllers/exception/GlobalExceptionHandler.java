@@ -1,6 +1,7 @@
 package com.business.finance_api.controllers.exception;
 
 import com.business.finance_api.dto.exception.RequestErrorMessage;
+import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,18 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 400,
                 "Bad Request",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(PlanningNotFoundException.class)
+    public ResponseEntity<RequestErrorMessage> planningNotFound(PlanningNotFoundException ex) {
+        RequestErrorMessage response = new RequestErrorMessage(
+                LocalDateTime.now(),
+                406,
+                "Not Acceptable",
                 ex.getMessage()
         );
 

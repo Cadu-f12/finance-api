@@ -14,4 +14,6 @@ public interface MonthlyClosingRepository extends JpaRepository<MonthlyClosingEn
     MonthlyClosingEntity findByReferenceDate(LocalDate date);
 
     boolean existsByStatus(MonthlyClosingStatus status);
+
+    MonthlyClosingEntity findByStatus(MonthlyClosingStatus status);
 }
