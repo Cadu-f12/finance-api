@@ -8,6 +8,9 @@ import com.business.finance_api.entities.MonthlyExpenseEntity;
 import com.business.finance_api.repositories.ExpenseCategoriesRepository;
 import com.business.finance_api.repositories.MonthlyClosingRepository;
 import com.business.finance_api.repositories.MonthlyExpenseRepository;
+import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
+import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
+import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
 import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -144,5 +147,44 @@ public class PlanningService {
                 monthlyClosing.getReferenceDate(),
                 responseValues
         );
+    }
+
+    @Transactional
+    public InvestmentResponse calculateInvestment(InvestmentRequest request) {
+        BigDecimal sumOfPercentages = BigDecimal.ZERO;
+        for (AllocationRequest modalityRequest : request.allocations()) {
+            sumOfPercentages = sumOfPercentages.add(modalityRequest.percentage());
+
+            int modalitiesQuantity = 0;
+            for (AllocationRequest modalityRequestCompare : request.allocations()) {
+                if (modalityRequest.modality().equals(modalityRequestCompare.modality())) {
+                    modalitiesQuantity += 1;
+                }
+                if (modalitiesQuantity == 2) {
+                    throw new DuplicateModalitiesException(
+                            String.format("Investment modality '%s' was provided more than once.", modalityRequest.modality())
+                    );
+                }
+            }
+        }
+        if (sumOfPercentages.compareTo(new BigDecimal("1")) != 0) {
+            throw new InvalidListOfPercentagesException("Investment allocations percentages must equal 100%.");
+        }
+        if (!this.monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
+            throw new PlanningNotFoundException("No active monthly planning was found.");
+        }
+
+        MonthlyClosingEntity monthlyClosing = this.monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);
+
+        if (
+            monthlyClosing.getLeisurePercentage().compareTo(BigDecimal.ZERO) == 0
+            || monthlyClosing.getInvestmentPercentage().compareTo(BigDecimal.ZERO) == 0
+        ) {
+            throw new MissingDataInMonthlyClosingException("The investment distribution cannot be performed because the monthly distribution has not been completed");
+        }
+
+        // TODO make the investments logic and assemble the response summary
+
+        return new InvestmentResponse(null, null, null, null, null);
     }
 }

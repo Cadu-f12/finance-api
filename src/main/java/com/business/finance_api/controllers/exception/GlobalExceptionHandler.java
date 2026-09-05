@@ -1,6 +1,9 @@
 package com.business.finance_api.controllers.exception;
 
 import com.business.finance_api.dto.exception.RequestErrorMessage;
+import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
+import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
+import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
 import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -85,6 +88,42 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(InvalidListOfPercentagesException.class)
+    public ResponseEntity<RequestErrorMessage> planningNotFound(InvalidListOfPercentagesException ex) {
+        RequestErrorMessage response = new RequestErrorMessage(
+                LocalDateTime.now(),
+                400,
+                "Bad Request",
+                ex.getMessage()
+        );
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(DuplicateModalitiesException.class)
+    public ResponseEntity<RequestErrorMessage> planningNotFound(DuplicateModalitiesException ex) {
+        RequestErrorMessage response = new RequestErrorMessage(
+                LocalDateTime.now(),
+                400,
+                "Bad Request",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MissingDataInMonthlyClosingException.class)
+    public ResponseEntity<RequestErrorMessage> planningNotFound(MissingDataInMonthlyClosingException ex) {
+        RequestErrorMessage response = new RequestErrorMessage(
+                LocalDateTime.now(),
+                409,
+                "Conflit",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

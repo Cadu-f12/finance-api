@@ -1,12 +1,10 @@
 package com.business.finance_api.controllers.planning;
 
-import com.business.finance_api.dto.planning.DistributionRequest;
-import com.business.finance_api.dto.planning.DistributionResponse;
-import com.business.finance_api.dto.planning.LiquidityRequest;
-import com.business.finance_api.dto.planning.LiquidityResponse;
+import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.services.PlanningService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +30,12 @@ public class PlanningController {
     @PostMapping("/distribution")
     public ResponseEntity<DistributionResponse> calculateDistribution(@Valid @RequestBody DistributionRequest request) {
         DistributionResponse response = planningService.calculateDistribution(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/investments")
+    public ResponseEntity<InvestmentResponse> calculateInvestment(@Valid @RequestBody InvestmentRequest request) {
+        InvestmentResponse response = planningService.calculateInvestment(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
