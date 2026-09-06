@@ -149,7 +149,11 @@ public class DataBaseSeeder implements CommandLineRunner {
             MonthlyClosingEntity monthlyClosingEntity = this.monthlyClosingRepository.findByReferenceDate(referenceDate);
             ModalitiesEntity modalitiesEntity = this.modalitiesRepository.findByName(modalityName);
 
-            InvestmentAllocationEntity investmentAllocation = new InvestmentAllocationEntity(null, entity.percentage(), monthlyClosingEntity, modalitiesEntity);
+            InvestmentAllocationEntity investmentAllocation = new InvestmentAllocationEntity(
+                    entity.percentage(),
+                    monthlyClosingEntity,
+                    modalitiesEntity
+            );
 
             this.investmentAllocationRepository.save(investmentAllocation);
         }
