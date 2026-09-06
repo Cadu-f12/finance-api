@@ -25,8 +25,11 @@ public class InvestmentAllocationEntity {
 
     protected InvestmentAllocationEntity() {}
 
-    public InvestmentAllocationEntity(Long id, BigDecimal percentage, MonthlyClosingEntity monthlyClosing, ModalitiesEntity modality) {
-        this.id = id;
+    public InvestmentAllocationEntity(
+            BigDecimal percentage,
+            MonthlyClosingEntity monthlyClosing,
+            ModalitiesEntity modality
+    ) {
         this.percentage = percentage;
         this.monthlyClosing = monthlyClosing;
         this.modality = modality;

@@ -8,6 +8,9 @@ public record MonthPlanResponse(
         @JsonProperty("current_balance")
         BigDecimal currentBalance,
 
+        @JsonProperty("total_expense")
+        BigDecimal totalExpense,
+
         @JsonProperty("net_balance")
         BigDecimal netBalance,
 

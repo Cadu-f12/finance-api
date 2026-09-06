@@ -1,13 +1,8 @@
 package com.business.finance_api.services;
 
 import com.business.finance_api.dto.planning.*;
-import com.business.finance_api.entities.ExpenseCategoriesEntity;
-import com.business.finance_api.entities.MonthlyClosingEntity;
-import com.business.finance_api.entities.MonthlyClosingStatus;
-import com.business.finance_api.entities.MonthlyExpenseEntity;
-import com.business.finance_api.repositories.ExpenseCategoriesRepository;
-import com.business.finance_api.repositories.MonthlyClosingRepository;
-import com.business.finance_api.repositories.MonthlyExpenseRepository;
+import com.business.finance_api.entities.*;
+import com.business.finance_api.repositories.*;
 import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
 import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
 import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
@@ -24,18 +19,25 @@ import java.util.List;
 @Service
 public class PlanningService {
     private final MonthlyClosingRepository monthlyClosingRepository;
+
     private final MonthlyExpenseRepository monthlyExpenseRepository;
     private final ExpenseCategoriesRepository expenseCategoriesRepository;
 
+    private final InvestmentAllocationRepository investmentAllocationRepository;
+    private final ModalitiesRepository modalitiesRepository;
 
     public PlanningService(
             MonthlyClosingRepository monthlyClosingRepository,
             MonthlyExpenseRepository monthlyExpenseRepository,
-            ExpenseCategoriesRepository expenseCategoriesRepository
+            ExpenseCategoriesRepository expenseCategoriesRepository,
+            InvestmentAllocationRepository investmentAllocationRepository,
+            ModalitiesRepository modalitiesRepository
     ) {
         this.monthlyClosingRepository = monthlyClosingRepository;
         this.monthlyExpenseRepository = monthlyExpenseRepository;
         this.expenseCategoriesRepository = expenseCategoriesRepository;
+        this.investmentAllocationRepository = investmentAllocationRepository;
+        this.modalitiesRepository = modalitiesRepository;
     }
 
     @Transactional
@@ -152,17 +154,25 @@ public class PlanningService {
     @Transactional
     public InvestmentResponse calculateInvestment(InvestmentRequest request) {
         BigDecimal sumOfPercentages = BigDecimal.ZERO;
-        for (AllocationRequest modalityRequest : request.allocations()) {
-            sumOfPercentages = sumOfPercentages.add(modalityRequest.percentage());
+        for (AllocationRequest allocation : request.allocations()) {
+            if (
+                !this.modalitiesRepository.existsByName(allocation.modality())
+            ) {
+                throw new EntityNotFoundException(
+                    String.format("Investment modality '%s' was not found.", allocation.modality())
+                );
+            }
+
+            sumOfPercentages = sumOfPercentages.add(allocation.percentage());
 
             int modalitiesQuantity = 0;
             for (AllocationRequest modalityRequestCompare : request.allocations()) {
-                if (modalityRequest.modality().equals(modalityRequestCompare.modality())) {
+                if (allocation.modality().equals(modalityRequestCompare.modality())) {
                     modalitiesQuantity += 1;
                 }
                 if (modalitiesQuantity == 2) {
                     throw new DuplicateModalitiesException(
-                            String.format("Investment modality '%s' was provided more than once.", modalityRequest.modality())
+                            String.format("Investment modality '%s' was provided more than once.", allocation.modality())
                     );
                 }
             }
@@ -183,8 +193,58 @@ public class PlanningService {
             throw new MissingDataInMonthlyClosingException("The investment distribution cannot be performed because the monthly distribution has not been completed");
         }
 
-        // TODO make the investments logic and assemble the response summary
+        BigDecimal currentBalance = monthlyClosing.getCurrentBalance();
+        BigDecimal totalExpense = BigDecimal.ZERO;
+        BigDecimal netBalance = currentBalance;
+        List<MonthlyExpenseEntity> listOfExpenses = monthlyClosing.getMonthlyExpenses();
 
-        return new InvestmentResponse(null, null, null, null, null);
+        for (MonthlyExpenseEntity expense : listOfExpenses) {
+            totalExpense = totalExpense.add(expense.getAmount());
+            netBalance = netBalance.subtract(expense.getAmount());
+        }
+
+        BigDecimal leisureAmount = netBalance.multiply(monthlyClosing.getLeisurePercentage());
+        BigDecimal investmentAmount = netBalance.multiply(monthlyClosing.getInvestmentPercentage());
+
+        List<AllocationResponse> allocations = new ArrayList<>();
+
+        for (AllocationRequest allocation : request.allocations()) {
+            ModalitiesEntity modality = this.modalitiesRepository.findByName(allocation.modality());
+
+            InvestmentAllocationEntity investmentAllocation = new InvestmentAllocationEntity(
+                allocation.percentage(),
+                monthlyClosing,
+                modality
+            );
+            AllocationResponse allocationResponse = new AllocationResponse(
+                allocation.modality(),
+                allocation.percentage(),
+                investmentAmount.multiply(allocation.percentage())
+            );
+
+            allocations.add(allocationResponse);
+            this.investmentAllocationRepository.save(investmentAllocation);
+        }
+
+        MonthPlanResponse monthlyPlanSummary = new MonthPlanResponse(
+            currentBalance,
+            totalExpense,
+            netBalance,
+            leisureAmount
+        );
+
+        InvestmentPlanResponse investmentPlanSummary = new InvestmentPlanResponse(
+            investmentAmount,
+            allocations
+        );
+
+        monthlyClosing.setStatus(MonthlyClosingStatus.OPEN);
+        return new InvestmentResponse(
+            "Investments allocated successfully. Monthly planning is now OPEN!",
+            monthlyClosing.getId(),
+            monthlyClosing.getReferenceDate(),
+            monthlyPlanSummary,
+            investmentPlanSummary
+        );
     }
 }
