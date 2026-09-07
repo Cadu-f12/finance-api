@@ -3,7 +3,9 @@ package com.business.finance_api.services;
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
+import com.business.finance_api.services.calculators.ExpenseSumCalculator;
 import com.business.finance_api.services.exceptions.planning.*;
+import com.business.finance_api.services.calculators.NetBalanceCalculator;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -50,8 +52,7 @@ public class PlanningService {
         }
 
         List<MonthlyExpenseEntity> expenseEntities = new ArrayList<>();
-        BigDecimal expensesSummation = BigDecimal.ZERO;
-        BigDecimal netBalance = request.currentBalance();
+        List<BigDecimal> listOfExpenses = new ArrayList<>();
 
         MonthlyClosingEntity closingEntity = new MonthlyClosingEntity(
                 request.salary(),
@@ -75,10 +76,13 @@ public class PlanningService {
             );
 
             expenseEntities.add(expenseEntity);
-
-            expensesSummation = expensesSummation.add(expense.amount());
-            netBalance = netBalance.subtract(expense.amount());
+            listOfExpenses.add(expense.amount());
         }
+
+        ExpenseSumCalculator expenseSumCalculator = new ExpenseSumCalculator(listOfExpenses);
+        NetBalanceCalculator netBalanceCalculator = new NetBalanceCalculator(
+            request.currentBalance(), expenseSumCalculator.calculate()
+        );
 
         monthlyClosingRepository.save(closingEntity);
         monthlyExpenseRepository.saveAll(expenseEntities);
@@ -87,8 +91,8 @@ public class PlanningService {
                 "Monthly planning started successfully.",
                 closingEntity.getId(),
                 closingEntity.getReferenceDate(),
-                expensesSummation,
-                netBalance
+                expenseSumCalculator.calculate(),
+                netBalanceCalculator.calculate()
         );
     }
 
