@@ -6,9 +6,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record DistributionRequest(
-        @JsonProperty("net_balance")
-        BigDecimal netBalance,
-
         @PositiveOrZero(message = "Leisure percentage must be greater than or equal to 0.")
         @JsonProperty("leisure_percentage")
         BigDecimal leisurePercentage,
@@ -20,8 +17,7 @@ public record DistributionRequest(
     @Override
     public String toString() {
         return "DistributionRequest{" +
-                "netBalance=" + netBalance +
-                ", leisurePercentage=" + leisurePercentage +
+                "leisurePercentage=" + leisurePercentage +
                 ", investmentPercentage=" + investmentPercentage +
                 '}';
     }
