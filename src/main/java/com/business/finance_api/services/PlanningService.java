@@ -3,6 +3,7 @@ package com.business.finance_api.services;
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
+import com.business.finance_api.services.calculators.DistributionCalculator;
 import com.business.finance_api.services.calculators.ExpenseSumCalculator;
 import com.business.finance_api.services.exceptions.planning.*;
 import com.business.finance_api.services.calculators.NetBalanceCalculator;
@@ -118,42 +119,25 @@ public class PlanningService {
         monthlyClosing.setLeisurePercentage(request.leisurePercentage());
         monthlyClosing.setInvestmentPercentage(request.investmentPercentage());
 
-        BigDecimal netBalance = request.netBalance();
+        List<BigDecimal> listOfExpenses = monthlyClosing.getMonthlyExpenses().stream()
+                .map(MonthlyExpenseEntity::getAmount)
+                .toList();
 
-        if (netBalance != null) {
-            BigDecimal leisure = netBalance.multiply(request.leisurePercentage());
-            BigDecimal investment = netBalance.multiply(request.investmentPercentage());
+        NetBalanceCalculator netBalanceCalculator = new NetBalanceCalculator(
+                monthlyClosing.getCurrentBalance(), new ExpenseSumCalculator(listOfExpenses).calculate()
+        );
 
-            DistributionValuesResponse responseValues = new DistributionValuesResponse(
-                    leisure,
-                    investment
-            );
+        BigDecimal netBalance = netBalanceCalculator.calculate();
 
-            return new DistributionResponse(
-                    String.format("Monthly updated with %s to leisure and %s to investments.", request.leisurePercentage(), request.investmentPercentage()),
-                    monthlyClosing.getId(),
-                    monthlyClosing.getReferenceDate(),
-                    responseValues
-            );
-        }
+        DistributionCalculator distributionCalculator = new DistributionCalculator(netBalance);
 
-        BigDecimal liquidity = monthlyClosing.getCurrentBalance();
-        List<MonthlyExpenseEntity> listOfExpenses = monthlyClosing.getMonthlyExpenses();
-
-        for (MonthlyExpenseEntity expense : listOfExpenses) {
-            BigDecimal amount = expense.getAmount();
-
-            liquidity = liquidity.subtract(amount);
-        }
-
-        BigDecimal leisure = liquidity.multiply(request.leisurePercentage());
-        BigDecimal investment = liquidity.multiply(request.investmentPercentage());
+        BigDecimal leisure = distributionCalculator.calculate(request.leisurePercentage());
+        BigDecimal investment = distributionCalculator.calculate(request.investmentPercentage());
 
         DistributionValuesResponse responseValues = new DistributionValuesResponse(
                 leisure,
                 investment
         );
-
         return new DistributionResponse(
                 String.format("Monthly updated with %s to leisure and %s to investments.", request.leisurePercentage(), request.investmentPercentage()),
                 monthlyClosing.getId(),
