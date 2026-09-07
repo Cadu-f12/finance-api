@@ -5,6 +5,7 @@ import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
 import com.business.finance_api.services.calculators.DistributionCalculator;
 import com.business.finance_api.services.calculators.ExpenseSumCalculator;
+import com.business.finance_api.services.calculators.InvestmentCalculator;
 import com.business.finance_api.services.exceptions.planning.*;
 import com.business.finance_api.services.calculators.NetBalanceCalculator;
 import jakarta.persistence.EntityExistsException;
@@ -188,18 +189,16 @@ public class PlanningService {
             throw new MissingDataInMonthlyClosingException("The investment distribution cannot be performed because the monthly distribution has not been completed");
         }
 
+        List<BigDecimal> listOfExpenses = monthlyClosing.getMonthlyExpenses().stream()
+            .map(MonthlyExpenseEntity::getAmount)
+            .toList();
+
         BigDecimal currentBalance = monthlyClosing.getCurrentBalance();
-        BigDecimal totalExpense = BigDecimal.ZERO;
-        BigDecimal netBalance = currentBalance;
-        List<MonthlyExpenseEntity> listOfExpenses = monthlyClosing.getMonthlyExpenses();
-
-        for (MonthlyExpenseEntity expense : listOfExpenses) {
-            totalExpense = totalExpense.add(expense.getAmount());
-            netBalance = netBalance.subtract(expense.getAmount());
-        }
-
-        BigDecimal leisureAmount = netBalance.multiply(monthlyClosing.getLeisurePercentage());
-        BigDecimal investmentAmount = netBalance.multiply(monthlyClosing.getInvestmentPercentage());
+        BigDecimal totalExpense = new ExpenseSumCalculator(listOfExpenses).calculate();
+        BigDecimal netBalance = new NetBalanceCalculator(currentBalance, totalExpense).calculate();
+        BigDecimal leisureAmount = new DistributionCalculator(netBalance).calculate(monthlyClosing.getLeisurePercentage());
+        BigDecimal investmentAmount = new DistributionCalculator(netBalance).calculate(monthlyClosing.getInvestmentPercentage());
+        InvestmentCalculator investmentCalculator = new InvestmentCalculator(netBalance);
 
         List<AllocationResponse> allocations = new ArrayList<>();
 
@@ -214,7 +213,7 @@ public class PlanningService {
             AllocationResponse allocationResponse = new AllocationResponse(
                 allocation.modality(),
                 allocation.percentage(),
-                investmentAmount.multiply(allocation.percentage())
+                investmentCalculator.calculate(allocation.percentage())
             );
 
             allocations.add(allocationResponse);
@@ -227,12 +226,10 @@ public class PlanningService {
             netBalance,
             leisureAmount
         );
-
         InvestmentPlanResponse investmentPlanSummary = new InvestmentPlanResponse(
             investmentAmount,
             allocations
         );
-
         monthlyClosing.setStatus(MonthlyClosingStatus.OPEN);
         return new InvestmentResponse(
             "Investments allocated successfully. Monthly planning is now OPEN!",
