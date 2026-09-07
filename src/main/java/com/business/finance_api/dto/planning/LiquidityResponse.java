@@ -14,6 +14,9 @@ public record LiquidityResponse(
         @JsonProperty("reference_date")
         LocalDate referenceDate,
 
+        @JsonProperty("total_expenses")
+        BigDecimal totalExpenses,
+
         @JsonProperty("net_balance")
         BigDecimal netBalance
 ) {

@@ -50,6 +50,7 @@ public class PlanningService {
         }
 
         List<MonthlyExpenseEntity> expenseEntities = new ArrayList<>();
+        BigDecimal expensesSummation = BigDecimal.ZERO;
         BigDecimal netBalance = request.currentBalance();
 
         MonthlyClosingEntity closingEntity = new MonthlyClosingEntity(
@@ -75,6 +76,7 @@ public class PlanningService {
 
             expenseEntities.add(expenseEntity);
 
+            expensesSummation = expensesSummation.add(expense.amount());
             netBalance = netBalance.subtract(expense.amount());
         }
 
@@ -85,6 +87,7 @@ public class PlanningService {
                 "Monthly planning started successfully.",
                 closingEntity.getId(),
                 closingEntity.getReferenceDate(),
+                expensesSummation,
                 netBalance
         );
     }
