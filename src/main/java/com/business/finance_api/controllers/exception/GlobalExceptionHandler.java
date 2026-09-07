@@ -1,10 +1,7 @@
 package com.business.finance_api.controllers.exception;
 
 import com.business.finance_api.dto.exception.RequestErrorMessage;
-import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
-import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
-import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
-import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
+import com.business.finance_api.services.exceptions.planning.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -117,6 +113,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingDataInMonthlyClosingException.class)
     public ResponseEntity<RequestErrorMessage> planningNotFound(MissingDataInMonthlyClosingException ex) {
+        RequestErrorMessage response = new RequestErrorMessage(
+                LocalDateTime.now(),
+                409,
+                "Conflit",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(DistributionAlreadyPerformedException.class)
+    public ResponseEntity<RequestErrorMessage> planningNotFound(DistributionAlreadyPerformedException ex) {
         RequestErrorMessage response = new RequestErrorMessage(
                 LocalDateTime.now(),
                 409,

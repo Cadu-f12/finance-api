@@ -3,10 +3,7 @@ package com.business.finance_api.services;
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
-import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
-import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
-import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
-import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
+import com.business.finance_api.services.exceptions.planning.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -46,7 +43,7 @@ public class PlanningService {
             throw new IllegalArgumentException("The reference date must start on the 1st of the month.");
         }
         if (monthlyClosingRepository.existsByReferenceDate(request.referenceDate())) {
-            throw new EntityExistsException(String.format("The date '%s' has already been finalized.", request.referenceDate()));
+            throw new EntityExistsException(String.format("The date '%s' has already been created.", request.referenceDate()));
         }
         if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new EntityExistsException("Active planning is already in place.");
@@ -97,13 +94,20 @@ public class PlanningService {
         if (!this.monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new PlanningNotFoundException("The current monthly planning has not completed the liquidity step.");
         }
-
         BigDecimal sumValidation = request.leisurePercentage().add(request.investmentPercentage());
         if (sumValidation.compareTo(new BigDecimal("1")) != 0) {
             throw new IllegalArgumentException("The sum of leisure percentage and investment percentage is must equal 100%");
         }
 
         MonthlyClosingEntity monthlyClosing = monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);
+
+        if (
+            monthlyClosing.getLeisurePercentage().compareTo(BigDecimal.ZERO) != 0
+            || monthlyClosing.getInvestmentPercentage().compareTo(BigDecimal.ZERO) != 0
+        ) {
+            throw new DistributionAlreadyPerformedException("The distribution calculation was already performed.");
+        }
+
         monthlyClosing.setLeisurePercentage(request.leisurePercentage());
         monthlyClosing.setInvestmentPercentage(request.investmentPercentage());
 
