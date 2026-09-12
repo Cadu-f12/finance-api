@@ -1,15 +1,11 @@
 package com.business.finance_api.controllers.planning;
 
 import com.business.finance_api.dto.planning.*;
-import com.business.finance_api.services.PlanningService;
+import com.business.finance_api.services.planning.PlanningService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/planning")
@@ -36,6 +32,12 @@ public class PlanningController {
     @PostMapping("/investments")
     public ResponseEntity<InvestmentResponse> calculateInvestment(@Valid @RequestBody InvestmentRequest request) {
         InvestmentResponse response = planningService.calculateInvestment(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/current_step")
+    public ResponseEntity<CurrentStepResponse> getCurrentStep() {
+        CurrentStepResponse response = this.planningService.getCurrentStep();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
