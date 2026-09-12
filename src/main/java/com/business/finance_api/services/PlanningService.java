@@ -3,10 +3,11 @@ package com.business.finance_api.services;
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
 import com.business.finance_api.repositories.*;
-import com.business.finance_api.services.exceptions.planning.DuplicateModalitiesException;
-import com.business.finance_api.services.exceptions.planning.InvalidListOfPercentagesException;
-import com.business.finance_api.services.exceptions.planning.MissingDataInMonthlyClosingException;
-import com.business.finance_api.services.exceptions.planning.PlanningNotFoundException;
+import com.business.finance_api.services.calculators.DistributionCalculator;
+import com.business.finance_api.services.calculators.ExpenseSumCalculator;
+import com.business.finance_api.services.calculators.InvestmentCalculator;
+import com.business.finance_api.services.exceptions.planning.*;
+import com.business.finance_api.services.calculators.NetBalanceCalculator;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -46,14 +47,14 @@ public class PlanningService {
             throw new IllegalArgumentException("The reference date must start on the 1st of the month.");
         }
         if (monthlyClosingRepository.existsByReferenceDate(request.referenceDate())) {
-            throw new EntityExistsException(String.format("The date '%s' has already been finalized.", request.referenceDate()));
+            throw new EntityExistsException(String.format("The date '%s' has already been created.", request.referenceDate()));
         }
         if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new EntityExistsException("Active planning is already in place.");
         }
 
         List<MonthlyExpenseEntity> expenseEntities = new ArrayList<>();
-        BigDecimal netBalance = request.currentBalance();
+        List<BigDecimal> listOfExpenses = new ArrayList<>();
 
         MonthlyClosingEntity closingEntity = new MonthlyClosingEntity(
                 request.salary(),
@@ -77,9 +78,13 @@ public class PlanningService {
             );
 
             expenseEntities.add(expenseEntity);
-
-            netBalance = netBalance.subtract(expense.amount());
+            listOfExpenses.add(expense.amount());
         }
+
+        ExpenseSumCalculator expenseSumCalculator = new ExpenseSumCalculator(listOfExpenses);
+        NetBalanceCalculator netBalanceCalculator = new NetBalanceCalculator(
+            request.currentBalance(), expenseSumCalculator.calculate()
+        );
 
         monthlyClosingRepository.save(closingEntity);
         monthlyExpenseRepository.saveAll(expenseEntities);
@@ -88,7 +93,8 @@ public class PlanningService {
                 "Monthly planning started successfully.",
                 closingEntity.getId(),
                 closingEntity.getReferenceDate(),
-                netBalance
+                expenseSumCalculator.calculate(),
+                netBalanceCalculator.calculate()
         );
     }
 
@@ -97,52 +103,42 @@ public class PlanningService {
         if (!this.monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new PlanningNotFoundException("The current monthly planning has not completed the liquidity step.");
         }
-
         BigDecimal sumValidation = request.leisurePercentage().add(request.investmentPercentage());
         if (sumValidation.compareTo(new BigDecimal("1")) != 0) {
             throw new IllegalArgumentException("The sum of leisure percentage and investment percentage is must equal 100%");
         }
 
         MonthlyClosingEntity monthlyClosing = monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);
+
+        if (
+            monthlyClosing.getLeisurePercentage().compareTo(BigDecimal.ZERO) != 0
+            || monthlyClosing.getInvestmentPercentage().compareTo(BigDecimal.ZERO) != 0
+        ) {
+            throw new DistributionAlreadyPerformedException("The distribution calculation was already performed.");
+        }
+
         monthlyClosing.setLeisurePercentage(request.leisurePercentage());
         monthlyClosing.setInvestmentPercentage(request.investmentPercentage());
 
-        BigDecimal netBalance = request.netBalance();
+        List<BigDecimal> listOfExpenses = monthlyClosing.getMonthlyExpenses().stream()
+                .map(MonthlyExpenseEntity::getAmount)
+                .toList();
 
-        if (netBalance != null) {
-            BigDecimal leisure = netBalance.multiply(request.leisurePercentage());
-            BigDecimal investment = netBalance.multiply(request.investmentPercentage());
+        NetBalanceCalculator netBalanceCalculator = new NetBalanceCalculator(
+                monthlyClosing.getCurrentBalance(), new ExpenseSumCalculator(listOfExpenses).calculate()
+        );
 
-            DistributionValuesResponse responseValues = new DistributionValuesResponse(
-                    leisure,
-                    investment
-            );
+        BigDecimal netBalance = netBalanceCalculator.calculate();
 
-            return new DistributionResponse(
-                    String.format("Monthly updated with %s to leisure and %s to investments.", request.leisurePercentage(), request.investmentPercentage()),
-                    monthlyClosing.getId(),
-                    monthlyClosing.getReferenceDate(),
-                    responseValues
-            );
-        }
+        DistributionCalculator distributionCalculator = new DistributionCalculator(netBalance);
 
-        BigDecimal liquidity = monthlyClosing.getCurrentBalance();
-        List<MonthlyExpenseEntity> listOfExpenses = monthlyClosing.getMonthlyExpenses();
-
-        for (MonthlyExpenseEntity expense : listOfExpenses) {
-            BigDecimal amount = expense.getAmount();
-
-            liquidity = liquidity.subtract(amount);
-        }
-
-        BigDecimal leisure = liquidity.multiply(request.leisurePercentage());
-        BigDecimal investment = liquidity.multiply(request.investmentPercentage());
+        BigDecimal leisure = distributionCalculator.calculate(request.leisurePercentage());
+        BigDecimal investment = distributionCalculator.calculate(request.investmentPercentage());
 
         DistributionValuesResponse responseValues = new DistributionValuesResponse(
                 leisure,
                 investment
         );
-
         return new DistributionResponse(
                 String.format("Monthly updated with %s to leisure and %s to investments.", request.leisurePercentage(), request.investmentPercentage()),
                 monthlyClosing.getId(),
@@ -193,18 +189,16 @@ public class PlanningService {
             throw new MissingDataInMonthlyClosingException("The investment distribution cannot be performed because the monthly distribution has not been completed");
         }
 
+        List<BigDecimal> listOfExpenses = monthlyClosing.getMonthlyExpenses().stream()
+            .map(MonthlyExpenseEntity::getAmount)
+            .toList();
+
         BigDecimal currentBalance = monthlyClosing.getCurrentBalance();
-        BigDecimal totalExpense = BigDecimal.ZERO;
-        BigDecimal netBalance = currentBalance;
-        List<MonthlyExpenseEntity> listOfExpenses = monthlyClosing.getMonthlyExpenses();
-
-        for (MonthlyExpenseEntity expense : listOfExpenses) {
-            totalExpense = totalExpense.add(expense.getAmount());
-            netBalance = netBalance.subtract(expense.getAmount());
-        }
-
-        BigDecimal leisureAmount = netBalance.multiply(monthlyClosing.getLeisurePercentage());
-        BigDecimal investmentAmount = netBalance.multiply(monthlyClosing.getInvestmentPercentage());
+        BigDecimal totalExpense = new ExpenseSumCalculator(listOfExpenses).calculate();
+        BigDecimal netBalance = new NetBalanceCalculator(currentBalance, totalExpense).calculate();
+        BigDecimal leisureAmount = new DistributionCalculator(netBalance).calculate(monthlyClosing.getLeisurePercentage());
+        BigDecimal investmentAmount = new DistributionCalculator(netBalance).calculate(monthlyClosing.getInvestmentPercentage());
+        InvestmentCalculator investmentCalculator = new InvestmentCalculator(netBalance);
 
         List<AllocationResponse> allocations = new ArrayList<>();
 
@@ -219,7 +213,7 @@ public class PlanningService {
             AllocationResponse allocationResponse = new AllocationResponse(
                 allocation.modality(),
                 allocation.percentage(),
-                investmentAmount.multiply(allocation.percentage())
+                investmentCalculator.calculate(allocation.percentage())
             );
 
             allocations.add(allocationResponse);
@@ -232,12 +226,10 @@ public class PlanningService {
             netBalance,
             leisureAmount
         );
-
         InvestmentPlanResponse investmentPlanSummary = new InvestmentPlanResponse(
             investmentAmount,
             allocations
         );
-
         monthlyClosing.setStatus(MonthlyClosingStatus.OPEN);
         return new InvestmentResponse(
             "Investments allocated successfully. Monthly planning is now OPEN!",
