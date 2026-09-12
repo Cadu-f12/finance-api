@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record CurrentStepResponse(
         @JsonProperty("current_step")
-        PlanningSteps currentStep
+        PlanningStep currentStep
 ) {
     @Override
     public String toString() {
