@@ -239,4 +239,27 @@ public class PlanningService {
             investmentPlanSummary
         );
     }
+
+    public CurrentStepResponse getCurrentStep() {
+        MonthlyClosingEntity monthlyClosing = this.monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);
+
+        if (monthlyClosing == null) {
+            return new CurrentStepResponse(
+                    PlanningStep.LIQUIDITY
+            );
+        }
+
+        if (
+                monthlyClosing.getLeisurePercentage().compareTo(BigDecimal.ZERO) == 0
+                && monthlyClosing.getInvestmentPercentage().compareTo(BigDecimal.ZERO) == 0
+        ) {
+            return new CurrentStepResponse(
+                    PlanningStep.DISTRIBUTION
+            );
+        }
+
+        return new CurrentStepResponse(
+                PlanningStep.INVESTMENTS
+        );
+    }
 }

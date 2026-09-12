@@ -34,4 +34,10 @@ public class PlanningController {
         InvestmentResponse response = planningService.calculateInvestment(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @GetMapping("/current_step")
+    public ResponseEntity<CurrentStepResponse> getCurrentStep() {
+        CurrentStepResponse response = this.planningService.getCurrentStep();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
