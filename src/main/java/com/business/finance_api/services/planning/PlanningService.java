@@ -1,4 +1,4 @@
-package com.business.finance_api.services;
+package com.business.finance_api.services.planning;
 
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
@@ -105,7 +105,7 @@ public class PlanningService {
         }
         BigDecimal sumValidation = request.leisurePercentage().add(request.investmentPercentage());
         if (sumValidation.compareTo(new BigDecimal("1")) != 0) {
-            throw new IllegalArgumentException("The sum of leisure percentage and investment percentage is must equal 100%");
+            throw new IllegalArgumentException("The sum of leisure percentage and investments percentage is must equal 100%");
         }
 
         MonthlyClosingEntity monthlyClosing = monthlyClosingRepository.findByStatus(MonthlyClosingStatus.PLANNING);
@@ -186,7 +186,7 @@ public class PlanningService {
             monthlyClosing.getLeisurePercentage().compareTo(BigDecimal.ZERO) == 0
             || monthlyClosing.getInvestmentPercentage().compareTo(BigDecimal.ZERO) == 0
         ) {
-            throw new MissingDataInMonthlyClosingException("The investment distribution cannot be performed because the monthly distribution has not been completed");
+            throw new MissingDataInMonthlyClosingException("The investments distribution cannot be performed because the monthly distribution has not been completed");
         }
 
         List<BigDecimal> listOfExpenses = monthlyClosing.getMonthlyExpenses().stream()
