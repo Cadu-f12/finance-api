@@ -1,4 +1,4 @@
-package com.business.finance_api.services.planning;
+package com.business.finance_api.services;
 
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
