@@ -1,4 +1,4 @@
-package com.business.finance_api.services.planning;
+package com.business.finance_api.services;
 
 import com.business.finance_api.dto.planning.*;
 import com.business.finance_api.entities.*;
@@ -51,6 +51,9 @@ public class PlanningService {
         }
         if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new EntityExistsException("Active planning is already in place.");
+        }
+        if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.OPEN)) {
+            throw new EntityExistsException("There is already an OPEN month in the system.");
         }
 
         List<MonthlyExpenseEntity> expenseEntities = new ArrayList<>();

@@ -1,7 +1,7 @@
-package com.business.finance_api.controllers.planning;
+package com.business.finance_api.controllers;
 
 import com.business.finance_api.dto.planning.*;
-import com.business.finance_api.services.planning.PlanningService;
+import com.business.finance_api.services.PlanningService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
