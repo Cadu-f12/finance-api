@@ -52,6 +52,9 @@ public class PlanningService {
         if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.PLANNING)) {
             throw new EntityExistsException("Active planning is already in place.");
         }
+        if (monthlyClosingRepository.existsByStatus(MonthlyClosingStatus.OPEN)) {
+            throw new EntityExistsException("There is already an OPEN month in the system.");
+        }
 
         List<MonthlyExpenseEntity> expenseEntities = new ArrayList<>();
         List<BigDecimal> listOfExpenses = new ArrayList<>();
